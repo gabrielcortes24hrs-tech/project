@@ -1,0 +1,11 @@
+(() => {
+const canvas=document.getElementById('code-rain'),ctx=canvas.getContext('2d');
+let w,h,columns,drops,fontSize=13;const glyphs='01ABCDEF∑⌬⌁⚡';
+function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;columns=Math.floor(w/fontSize);drops=Array(columns).fill(1)}
+resize();window.addEventListener('resize',resize);
+let frame=0;function draw(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;frame++;if(frame%2)return;ctx.fillStyle='rgba(8,11,12,.09)';ctx.fillRect(0,0,w,h);ctx.font=fontSize+'px DM Mono, monospace';for(let i=0;i<drops.length;i++){if(i<3||i>columns-4) {const char=glyphs[Math.floor(Math.random()*glyphs.length)];ctx.fillStyle=Math.random()>.94?'#c98148':'#69f0ae';ctx.globalAlpha=.3+Math.random()*.5;ctx.fillText(char,i*fontSize,drops[i]*fontSize);ctx.globalAlpha=1;if(drops[i]*fontSize>h&&Math.random()>.975)drops[i]=0;drops[i]++;}}requestAnimationFrame(draw)}draw();
+const menu=document.querySelector('.menu'),nav=document.querySelector('nav');menu.addEventListener('click',()=>nav.classList.toggle('open'));nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+document.getElementById('year').textContent=new Date().getFullYear();
+document.querySelectorAll('.service-card').forEach(card=>{card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',(e.clientX-r.left)+'px');card.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+document.getElementById('quote-form').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.target);const nome=d.get('nome'),telefone=d.get('telefone'),servico=d.get('servico'),mensagem=d.get('mensagem');const msg=`Olá! Meu nome é ${nome}.\\nWhatsApp: ${telefone}.\\nServiço: ${servico}.\\nDetalhes: ${mensagem||'Não informado'}\\nGostaria de solicitar um orçamento com a Lumenzzatto.`;const whatsapp= '';if(!whatsapp){alert('Configure o número comercial da Lumenzzatto no script.js para habilitar o envio direto pelo WhatsApp.');return;}window.open('https://wa.me/'+whatsapp+'?text='+encodeURIComponent(msg),'_blank','noopener');});
+})();
